@@ -1,0 +1,42 @@
+#!/bin/bash
+#|-------------+----------------------------------------------------------|
+#| Title       | ifconfig-me                                              |
+#|-------------+----------------------------------------------------------|
+#| Date        | 2010-11-16                                               |
+#|-------------+----------------------------------------------------------|
+#| Author      | Israel Fimbres D. <israel.fimbres@gmail.com>             |
+#|-------------+----------------------------------------------------------|
+#| Version     | 1.0                                                      |
+#|-------------+----------------------------------------------------------|
+#| Description | Client who exposes some of the services of the           |
+#|             | <http://ifconfig.me> site to the command line interface. |
+#|-------------+----------------------------------------------------------|
+
+[ -z $1 ] && cat <<EOF && exit 1
+ifconfig-me { -i | -u | -h | -p }
+
+-i
+  ip
+
+-u
+  user agent
+
+-h
+  host
+
+-p
+  port
+
+EOF
+
+while getopts 'iuhpa:' op
+do
+    case $op in
+	'i') wget -q -O - http://ifconfig.me/ip ;;
+	'u') wget -q -O - http://ifconfig.me/ua ;;
+	'h') wget -q -O - http://ifconfig.me/host ;;
+	'p') wget -q -O - http://ifconfig.me/port ;;
+    esac
+done
+
+exit 0

@@ -1,0 +1,43 @@
+#!/bin/bash
+#|-------------+---------------------------------------------------------------|
+#| Title       | flash-cp-from-memory                                          |
+#|-------------+---------------------------------------------------------------|
+#| Date        | 2011-01-02                                                    |
+#|-------------+---------------------------------------------------------------|
+#| Author      | Israel Fimbres D. <istael.fimbres@gmail.com>                  |
+#|-------------+---------------------------------------------------------------|
+#| Version     | 1.0                                                           |
+#|-------------+---------------------------------------------------------------|
+#| Description | Copies the desired flash file that is beign used by a running |
+#|             | process (most likely our web browser's flash plug-in) to our  |
+#|             | $HOME directory.                                              |
+#|-------------+---------------------------------------------------------------|
+
+function get_files
+{
+    lsof |
+    grep '/tmp/Flash' |
+    sed 's/.*\/tmp\/\(.\+\) .*/\1/' |
+    sort |
+    uniq
+}
+
+function get_var
+{
+    lsof |
+    grep $file |
+    head -n1 |
+    sed 's/[[:space:]]\+/ /g' |
+    cut -f2,4 -d' ' |
+    sed 's/ \([[:digit:]]\+\).*/ \1 '$file'/'	
+}
+
+select file in $(get_files); do
+    var=$(get_var)
+    
+    proc=$(echo $var | cut -f1 -d' ')
+    fd=$(echo $var | cut -f2 -d' ')
+    file_name=$(echo $var | cut -f3 -d' ')
+    
+    cp -i /proc/$proc/fd/$fd ~/$file_name
+done;
