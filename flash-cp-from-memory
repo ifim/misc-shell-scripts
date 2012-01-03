@@ -31,21 +31,20 @@ function get_var
     head -n1 |
     sed 's/[[:space:]]\+/ /g' |
     cut -f2,4 -d' ' |
-    sed 's/ \([[:digit:]]\+\).*/ \1 '$file'/'	
+    sed 's/ \([[:digit:]]\+\).*/ \1/'	
 }
 
 function main
 {
-    local var proc fd title_name
+    local var proc fd
 
     select file in $(get_files); do
 	var=$(get_var $file)
     
 	proc=$(echo $var | cut -f1 -d' ')
 	fd=$(echo $var | cut -f2 -d' ')
-	file_name=$(echo $var | cut -f3 -d' ')
     
-	cp -i /proc/$proc/fd/$fd ~/$file_name
+	cp -i /proc/$proc/fd/$fd ~/$file
     done
 }
 
