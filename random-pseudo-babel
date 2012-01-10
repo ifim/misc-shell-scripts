@@ -1,0 +1,78 @@
+#!/bin/bash
+#|-------------+-------------------------------------------------------------|
+#| Title       | random-pseudo-babel                                         |
+#|-------------+-------------------------------------------------------------|
+#| Date        | 2011-09-03                                                  |
+#|-------------+-------------------------------------------------------------|
+#| Author      | Israel Fimbres D. <israel.fimbres@gmail.com>                |
+#|-------------+-------------------------------------------------------------|
+#| Version     | 1.0                                                         |
+#|-------------+-------------------------------------------------------------|
+#| Description | Gets a loosely based random book's look-alike page from     |
+#|             | The Library of Babel as described by Jorge Luis Borges in   |
+#|             | his famous short story of the same title.                   |
+#|             | It can be used as a Lorem Ipsum-like text generator, pretty |
+#|             | inefficient at that but still possible.                     |
+#|-------------+-------------------------------------------------------------|
+
+function word
+{
+    local min_length=${1:-1} max_length=${2:-16}
+
+    # The minimum length of the word needs be greater than zero.
+    [ $min_length -lt 1 ] && min_length=1
+
+    # The maximum length of the word can't be less than the minimum.
+    [ $max_length -lt $min_length ] && max_length=$[min_length+1]
+
+    # We get our random string from the [a,z] inclusive range of letters.
+    strings /dev/urandom |
+    sed 's/[^a-z]//g' |
+    tr -d '\n' |
+    
+    # Our word within the desired range size.
+    head -c$[min_length+RANDOM%max_length]
+}
+
+function sentence
+{
+    local words=${1:-16}
+
+    # Uppercase sentence's first word's letter.
+    word | sed 's/\(.*\)/\u\1/'
+    ((words--))
+
+    # The rest of the sentence contains only lowercase words, spaces and
+    # commas placed at random.
+    for i in $(seq $words); do
+	word
+	[ $[1+RANDOM%10] -eq 1 ] && echo -n ', ' || echo -n ' '
+    done |
+    
+    # Can't forget sentence's last dot.
+    sed 's/\(, \| \)$/. /'
+}
+
+function paragraph
+{
+    local sentences=${1:-4}
+
+    for i in $(seq $sentences); do
+	sentence
+    done
+
+    echo -e '\b\n'
+}
+
+function page
+{
+    local paragraphs=${1:-8}
+
+    for i in $(seq $paragraphs); do
+	paragraph
+    done
+}
+
+page
+
+exit 0
