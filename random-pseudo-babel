@@ -19,7 +19,7 @@ function word
 {
     local min_length=${1:-1} max_length=${2:-16}
 
-    # The minimum length of the word needs be greater than zero.
+    # The minimum length of the word needs to be greater than zero.
     [ $min_length -lt 1 ] && min_length=1
 
     # The maximum length of the word can't be less than the minimum.
