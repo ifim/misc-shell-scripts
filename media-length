@@ -12,6 +12,22 @@
 #|             | music/video files which are given as parameters.      |
 #|-------------+-------------------------------------------------------|
 
+function dependencies
+{
+    local apps=(mplayer bc)
+    local status=0
+
+    for app in ${apps[@]}; do
+	if ! hash $app 2> /dev/null; then
+	    echo >&2 "You'll need $app to run this script."
+
+	    status=1
+	fi
+    done
+
+    return $status
+}
+
 function get_media_length
 {
     local media="$1"
@@ -49,6 +65,4 @@ function main
     print_time $total "TOTAL"
 }
 
-main "$@"
-
-exit 0
+dependencies && { main "$@" && exit 0; } || exit 1
