@@ -8,13 +8,18 @@
 #|-------------+---------------------------------------------------------------|
 #| Version     | 1.0                                                           |
 #|-------------+---------------------------------------------------------------|
-#| Description | Copies the desired flash file that is beign used by a running |
-#|             | process (most likely our web browser's flash plug-in) to our  |
-#|             | $HOME directory.                                              |
+#| Description | Copies the desired flash video file that is beign used by a   |
+#|             | running process (most likely our web browser's flash plug-in) |
+#|             | to our $HOME directory.                                       |
+#|             |                                                               |
+#|             | Because it uses the /proc directory it goes without saying    |
+#|             | that it only runs under Linux.                                |
 #|-------------+---------------------------------------------------------------|
 
 function get_files
 {
+    # Check wich flash video files are attached to our processes and
+    # get their fancy names.
     lsof |
     grep '/tmp/Flash' |
     sed 's/.*\/tmp\/\(.\+\) .*/\1/' |
@@ -26,6 +31,8 @@ function get_var
 {
     local file=$1
 
+    # Given the file name, obtain the pertinent fields in which relevant info
+    # is located, such as the PID and FD.
     lsof |
     grep $file |
     head -n1 |
@@ -38,6 +45,8 @@ function main
 {
     local var proc fd
 
+    # Last but not least, display the files we previously found and exposes
+    # them for copy.
     select file in $(get_files); do
 	var=$(get_var $file)
     

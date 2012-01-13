@@ -1,0 +1,54 @@
+#!/bin/bash
+#|-------------+-------------------------------------------------------|
+#| Title       | media-length                                          |
+#|-------------+-------------------------------------------------------|
+#| Date        | 2012-01-12                                            |
+#|-------------+-------------------------------------------------------|
+#| Author      | Israel Fimbres D. <israel.fimbres@gmail.com           |
+#|-------------+-------------------------------------------------------|
+#| Version     | 1.0                                                   |
+#|-------------+-------------------------------------------------------|
+#| Description | Displays the duration in hours/minutes/seconds of the |
+#|             | music/video files which are given as parameters.      |
+#|-------------+-------------------------------------------------------|
+
+function get_media_length
+{
+    local media="$1"
+    local length=$(
+	mplayer -vo null -ao null -frames 0 -identify "$media" 2> /dev/null |
+	sed -n '/ID_LENGTH/p' |
+	cut -f2 -d'='
+    )
+    
+    echo $length
+}
+
+function print_time
+{
+    local length=$1 media="$2"
+    local hours=$(bc <<< "$length/3600")
+    local minutes=$(bc <<< "($length-$hours*3600)/60")
+    local seconds=$(bc <<< "$length%60")
+
+    printf "%d:%02d:%02d\t%s\n" $hours $minutes ${seconds//.*} "$media"
+}
+
+function main
+{
+    local media_length
+    local total=0
+
+    for file in "$@"; do
+	media_length=$(get_media_length "$file")
+	total=$(bc <<< "$total+$media_length")
+
+	print_time $media_length "$file"
+    done
+    
+    print_time $total "TOTAL"
+}
+
+main "$@"
+
+exit 0
