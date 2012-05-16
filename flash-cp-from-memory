@@ -53,7 +53,7 @@ function main
 	proc=$(echo $var | cut -f1 -d' ')
 	fd=$(echo $var | cut -f2 -d' ')
     
-	cp -i /proc/$proc/fd/$fd ~/$file
+	cp -i /proc/$proc/fd/$fd $file
     done
 }
 
