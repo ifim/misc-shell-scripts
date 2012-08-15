@@ -25,7 +25,7 @@ my ($file_name, $json) = @ARGV ? shift @ARGV : (
  sort { $a->[1] <=> $b->[1] }
  map { [$_, (stat)[9]] }
  <$ENV{HOME}/.mozilla/firefox/*.default/bookmarkbackups/*>
-)[-1] or die "Couldn't opent the bookmark database file.";
+)[-1] or die "Couldn't get the bookmark database file.";
 
 {
   open my $fh, '<', $file_name or die $!;
