@@ -10,10 +10,8 @@
 #|-------------+---------------------------------------------------------------|
 #| Description | Copies the desired flash video file that is beign used by a   |
 #|             | running process (most likely our web browser's flash plug-in) |
-#|             | to our $HOME directory.                                       |
-#|             |                                                               |
-#|             | Because it uses the /proc directory it goes without saying    |
-#|             | that it only runs under Linux.                                |
+#|             | to our $HOME directory. It makes use of the /proc filesystem  |
+#|             | to achieve this.                                              |
 #|-------------+---------------------------------------------------------------|
 
 function get_files
