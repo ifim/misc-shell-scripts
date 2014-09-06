@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+#|-------------+--------------------------------------------------------------|
+#| Title       | perl-oneliners                                               |
+#|-------------+--------------------------------------------------------------|
+#| Date        | 2014-09-06                                                   |
+#|-------------+--------------------------------------------------------------|
+#| Author      | Israel Fimbres D. <israel.fimbres@gmail.com>                 |
+#|-------------+--------------------------------------------------------------|
+#| Version     | 1.0                                                          |
+#|-------------+--------------------------------------------------------------|
+#| Description | Just trying to have some fun with Perl, and the least amount |
+#|             | of characters I can come up with.                            |
+#|-------------+--------------------------------------------------------------|
+
+function halp {
+    cat <<EOF
+usage: $0 [ oneliner | { --help | -h} ] [ args ]
+
+--help | -h
+  display this message
+
+oneliners:
+  fibonacci-sequence [ amount of numbers from the sequence, defaults to 42 ]
+EOF
+}
+
+case $1 in
+    'fibonacci-sequence')
+	perl -E '$i=sub{my@x=(0,1);sub{push@x,$x[0]+$x[1];shift@x}}->();say join"\n",map&$i,1..pop' ${2:-42}
+	;;
+    '--help'|'-h'|'')
+	halp
+	;;
+    *)
+	printf "error: the oneliner '%s' was not found\n" "$1" 1>&2
+	exit -1
+esac
