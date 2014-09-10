@@ -29,13 +29,23 @@ ifconfig-me { -i | -u | -h | -p }
 
 EOF
 
+
+if hash wget > /dev/null 2>&1 ; then
+    user_agent='wget -q -O - '
+elif hash curl > /dev/null 2>&1; then
+    user_agent='curl '
+else
+    echo 'error: either wget or curl must be installed' 1>&2
+    exit -1
+fi
+
 while getopts 'iuhpa:' op
 do
     case $op in
-	'i') wget -q -O - http://ifconfig.me/ip ;;
-	'u') wget -q -O - http://ifconfig.me/ua ;;
-	'h') wget -q -O - http://ifconfig.me/host ;;
-	'p') wget -q -O - http://ifconfig.me/port ;;
+	'i') $user_agent http://ifconfig.me/ip ;;
+	'u') $user_agent http://ifconfig.me/ua ;;
+	'h') $user_agent http://ifconfig.me/host ;;
+	'p') $user_agent http://ifconfig.me/port ;;
     esac
 done
 
