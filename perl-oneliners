@@ -6,7 +6,7 @@
 #|-------------+--------------------------------------------------------------|
 #| Author      | Israel Fimbres D. <israel.fimbres@gmail.com>                 |
 #|-------------+--------------------------------------------------------------|
-#| Version     | 1.0                                                          |
+#| Version     | 2.0                                                          |
 #|-------------+--------------------------------------------------------------|
 #| Description | Just trying to have some fun with Perl, and the least amount |
 #|             | of characters I can come up with.                            |
@@ -21,12 +21,18 @@ usage: $0 [ oneliner | { --help | -h} ] [ args ]
 
 oneliners:
   fibonacci-sequence [ amount of numbers from the sequence, defaults to 42 ]
+
+  newton-rhapson [{to approximate} [{approximate from} [approximations]]]
 EOF
 }
 
 case $1 in
     'fibonacci-sequence')
 	perl -E '$i=sub{my@x=(0,1);sub{push@x,$x[0]+$x[1];shift@x}}->();say join"\n",map&$i,1..pop' ${2:-42}
+	;;
+    'newton-rhapson')
+	# For reference: http://www.sosmath.com/calculus/diff/der07/der07.html
+	perl -E 'sub _{--$_[2]?&_($_[0],$_[1]-($_[1]**2-$_[0])/(2*$_[1]),$_[2]):$_[1]};say _@ARGV' ${2:-5} ${3:-2} ${4:-6}
 	;;
     '--help'|'-h'|'')
 	halp
